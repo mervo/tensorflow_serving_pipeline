@@ -18,7 +18,9 @@ To reduce the impact of lazy initialization on request latency, it's possible to
 Refer to https://www.tensorflow.org/tfx/serving/saved_model_warmup
 
 ## Loading of Model into your TensorFlow Serving Docker image/container
-Refer to `Dockerfile` for more details.
+Refer to `Dockerfile` for more details. Adapt as necessary for use-case.
+
+Serving multiple models: https://www.tensorflow.org/tfx/serving/serving_config#model_server_configuration
 ### Copying of Model into Image
 Copy your model into your Docker image by copying your model into `your_output_saved_model`.
 
@@ -37,7 +39,7 @@ target=/models/model \
  -e MODEL_NAME=model -t tensorflow_serving_server &
 ```
 
-## Quick Test
+## Quick Test using `saved_model_half_plus_two_gpu model`
 Use contents from `sample_models` into `your_model_here` for quick testing. Refer to "Copying Of Model into Image" above.
 
 Test Server (for included saved_model_half_plus_two_gpu model)
@@ -52,10 +54,15 @@ Server is only ready when the following message appears, may take some time:
 Exporting HTTP/REST API at:localhost:8501 ...
 ```
 
+## Testing Your Model
+Change `image_preproc_for_model_input` in `test_client.py` to preprocess your input image to match your model's input.
+
+`python test_client.py ./test.jpg http://localhost:8501/v1/models/model:predict`
+
 ## Errors
 `E external/org_tensorflow/tensorflow/stream_executor/cuda/cuda_dnn.cc:329] Could not create cudnn handle: CUDNN_STATUS_INTERNAL_ERROR`
 
-Out of GPU memory, use the following arguments to run your container:
+Should be caused by TensorFlow using up all of the available GPU memory, use the following arguments to run your container if you are testing on your development environment and not running a dedicated server:
 
 `docker run --runtime=nvidia -p 8501:8501 -e MODEL_NAME=model -t tensorflow_serving_server --per_process_gpu_memory_fraction=0.7 --enable_batching=true --tensorflow_session_parallelism=2`
 
