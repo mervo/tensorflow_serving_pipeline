@@ -29,11 +29,11 @@
 
 FROM tensorflow/serving:latest-gpu
 
-COPY ./your_model_here /models/model
+COPY ./your_output_saved_model /models/model
 WORKDIR /models/model
 
-ENV PATH /usr/local/cuda/bin/:$PATH
-ENV LD_LIBRARY_PATH /usr/local/cuda/lib:/usr/local/cuda/lib64
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES all
-LABEL com.nvidia.volumes.needed="nvidia_driver"
+# ENV PATH /usr/local/cuda/bin/:$PATH
+# ENV LD_LIBRARY_PATH /usr/local/cuda/lib:/usr/local/cuda/lib64
+# ENV NVIDIA_VISIBLE_DEVICES all
+# ENV NVIDIA_DRIVER_CAPABILITIES all
+# LABEL com.nvidia.volumes.needed="nvidia_driver"
